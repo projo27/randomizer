@@ -7,8 +7,10 @@ class AppColor {
   static const Color orange = Color(0xFFFFA633);
   static const Color blue = Color(0xFF3B5A9D);
   static const Color green = Color(0xFF4FB2AA);
+  static const Color green50 = Color(0xFF44E2AA);
   static const Color black50 = Color(0xFF59597C);
   static const Color black = Color(0xFF3D3D41);
+  static Color grey = Colors.grey[200]!;
 }
 
 const lightColorScheme = ColorScheme(

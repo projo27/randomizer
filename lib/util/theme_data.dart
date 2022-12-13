@@ -7,10 +7,34 @@ ThemeData get themeData {
   const colorSheme = lightColorScheme;
 
   return base.copyWith(
-    // backgroundColor: colorSheme.surface,
+    colorScheme: colorSheme,
     visualDensity: VisualDensity.adaptivePlatformDensity,
     textTheme: GoogleFonts.plusJakartaSansTextTheme().copyWith(
+      headline6: GoogleFonts.plusJakartaSans(
+          fontWeight: FontWeight.bold, fontSize: 18),
       bodyText1: GoogleFonts.plusJakartaSans(color: colorSheme.onSurface),
     ),
+
+    /// Button
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    ),
+    checkboxTheme: CheckboxThemeData(
+      // checkColor: MaterialStateProperty.all<Color>(AppColor.green),
+      fillColor: MaterialStateProperty.all<Color>(AppColor.green),
+    ),
+    switchTheme: SwitchThemeData(
+      trackColor: MaterialStateProperty.all<Color>(AppColor.milk),
+      thumbColor: MaterialStateProperty.all<Color>(AppColor.green),
+    ),
+
+    hintColor: AppColor.green,
+    // inputDecorationTheme: InputDecorationTheme(
+    //   bor
+    // )
   );
 }

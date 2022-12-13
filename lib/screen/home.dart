@@ -1,7 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:randomizer/screen/random_menu.dart';
 import 'package:randomizer/util/colors.dart';
+import 'package:randomizer/util/image_map.dart';
+import 'package:randomizer/widget/background.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,95 +19,71 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Theme.of(context).backgroundColor,
-      body: Container(
-        child: Stack(
-          children: [
-            const BackgroundWidget(),
-            Text("Ini Halaman Home"),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 80,
-                decoration: BoxDecoration(
-                  color: AppColor.green.withOpacity(0.5),
-                ),
+      body: Stack(
+        children: [
+          const BackgroundWidget(),
+          Padding(
+            padding: EdgeInsets.all(16).copyWith(bottom: 80),
+            child: RandomMenuScreen(),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 80,
+              decoration: BoxDecoration(
+                color: AppColor.green.withOpacity(0.5),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    height: 42,
+                    width: 42,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        primary: AppColor.white,
+                        padding: EdgeInsets.all(2),
+                      ),
+                      child: SvgPicture.asset(svgMap["more"]!),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                        padding: EdgeInsets.all(2),
+                      ),
+                      child: SvgPicture.asset(svgMap["randomize"]!),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 42,
+                    width: 42,
+                    child: ElevatedButton(
+                      onPressed: null,
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        primary: AppColor.white,
+                        padding: EdgeInsets.all(2),
+                      ),
+                      child: SvgPicture.asset(svgMap["param"]!),
+                    ),
+                  )
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
-}
-
-class BackgroundWidget extends StatelessWidget {
-  const BackgroundWidget({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-    return Stack(
-      children: [
-        Positioned(
-          right: -(height / 8),
-          top: 0,
-          child: Container(
-            width: height / 3,
-            height: height / 3,
-            decoration: const BoxDecoration(
-              color: AppColor.milk,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-        Positioned(
-          right: -(height / 6),
-          bottom: -30,
-          child: Container(
-            width: height / 2,
-            height: height / 2,
-            decoration: BoxDecoration(
-              color: AppColor.orange.withOpacity(0.5),
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-        Positioned(
-          left: -90,
-          top: 50,
-          child: Container(
-            width: 180,
-            height: 180,
-            decoration: const BoxDecoration(
-              color: AppColor.green,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-        Positioned(
-          left: -120,
-          bottom: -100,
-          child: Container(
-            width: 400,
-            height: 400,
-            decoration: const BoxDecoration(
-              color: AppColor.green,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-        BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: 100.0,
-            sigmaY: 100.0,
-          ),
-          // blendMode: BlendMode.color,
-          child: Container(),
-        ),
-      ],
     );
   }
 }
