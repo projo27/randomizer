@@ -12,8 +12,10 @@ class FlipCoinScreen extends StatelessWidget {
     return ScreenContainer(
       tag: '/flip_coin',
       title: 'Flip Coin',
-      bottomBar: BottomBar(),
-      child: Text("Flip Coin"),
+      bottomBar: BottomBar(
+        onRandomize: () {},
+      ),
+      child: Center(child: Text("Flip Coin")),
     );
   }
 }

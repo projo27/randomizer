@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:randomizer/provider/list_of_url.dart';
+import 'package:randomizer/provider/list_of_url_provider.dart';
 import 'package:randomizer/widget/bottom_button_bar.dart';
 import 'package:randomizer/widget/screen_container.dart';
 

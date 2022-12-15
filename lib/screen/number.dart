@@ -20,7 +20,7 @@ class NumberScreen extends StatefulWidget {
 
 class _NumberScreenState extends State<NumberScreen>
     with TickerProviderStateMixin {
-  bool paramShow = false;
+  bool isParamShowed = false;
   late TabController _tabController;
   final ScrollController _scrollController = ScrollController();
 
@@ -83,17 +83,17 @@ class _NumberScreenState extends State<NumberScreen>
       bottomBar: BottomBar(
         onParamTap: () {
           setState(() {
-            paramShow = !paramShow;
+            isParamShowed = !isParamShowed;
           });
         },
         onRandomize: () {
           setState(() {
-            paramShow = false;
+            isParamShowed = false;
           });
           context.read<NumberProvider>().randomize();
         },
         isLoading: provider.isLoading,
-        isParamOpen: paramShow,
+        isParamOpen: isParamShowed,
       ),
       child: Stack(
         children: [
@@ -158,11 +158,11 @@ class _NumberScreenState extends State<NumberScreen>
             ),
           ),
           AnimatedPositioned(
-            bottom: paramShow ? 0 : paramHeight * -1 + 20,
+            bottom: isParamShowed ? 0 : paramHeight * -1 + 20,
             left: 0,
             right: 0,
             duration: const Duration(milliseconds: 250),
-            curve: paramShow ? Curves.easeOut : Curves.easeIn,
+            curve: isParamShowed ? Curves.easeOut : Curves.easeIn,
             child: Stack(
               children: [
                 Container(
@@ -202,7 +202,7 @@ class _NumberScreenState extends State<NumberScreen>
                                 children: const [
                                   Icon(Icons.numbers, size: 12),
                                   SizedBox(width: 4),
-                                  Text('Range of Number'),
+                                  Text('Range'),
                                 ],
                               ),
                             ),
@@ -213,7 +213,7 @@ class _NumberScreenState extends State<NumberScreen>
                                 children: const [
                                   Icon(Icons.format_list_numbered, size: 12),
                                   SizedBox(width: 4),
-                                  Text('List of Number'),
+                                  Text('List'),
                                 ],
                               ),
                             ),
@@ -235,14 +235,14 @@ class _NumberScreenState extends State<NumberScreen>
                   ),
                 ),
                 Visibility(
-                  visible: paramShow,
+                  visible: isParamShowed,
                   child: Positioned(
                     right: -8,
                     top: -8,
                     child: IconButton(
                       onPressed: () {
                         setState(() {
-                          paramShow = !paramShow;
+                          isParamShowed = !isParamShowed;
                         });
                       },
                       color: AppColor.black50,

@@ -78,7 +78,18 @@ class NumberProvider extends AbstractProvider {
     theResult.clear();
     duration = 0;
     try {
-      await rangeProcessor();
+      if (int.tryParse(startRange.toString()) != null ||
+          int.tryParse(endRange.toString()) != null) {
+        listOfNumberTemp.clear();
+        theResultTempList.clear();
+
+        for (num i = startRange; i <= endRange; i++) {
+          listOfNumberTemp.add(i);
+        }
+        await rangeProcessorInt();
+      } else {
+        await rangeProcessor();
+      }
       if (_sort) {
         theResult.sort((a, b) => isAsc
             ? double.parse(a).compareTo(double.parse(b))
@@ -99,8 +110,8 @@ class NumberProvider extends AbstractProvider {
       await listProcessor();
       if (_sort) {
         theResult.sort((a, b) => isAsc
-            ? double.parse(a).compareTo(double.parse(b))
-            : double.parse(b).compareTo(double.parse(a)));
+            ? num.parse(a).compareTo(num.parse(b))
+            : num.parse(b).compareTo(num.parse(a)));
       }
       setSuccess();
     } catch (e) {
@@ -138,10 +149,8 @@ class NumberProvider extends AbstractProvider {
       return;
     }
 
-    int time = (Random().nextInt(100) + 100).round();
-    duration += time;
+    await delay();
 
-    await Future.delayed(Duration(milliseconds: time));
     double r = (Random().nextDouble() * (startRange + endRange)) + startRange;
     if (distinct && theResult.contains(r.toStringAsFixed(numberOfDecimal))) {
       return await rangeProcessor();
@@ -151,6 +160,33 @@ class NumberProvider extends AbstractProvider {
     return await rangeProcessor();
   }
 
+  rangeProcessorInt() async {
+    if (theResult.length == resultAmount) return;
+    if (distinct && theResult.length == listOfNumberTemp.length) {
+      resultAmount = listOfNumberTemp.length;
+      return;
+    }
+
+    await delay();
+
+    var m = Map.from(List.from(listOfNumberTemp).asMap());
+
+    if (distinct) {
+      for (int i = 0; i < theResultTempList.length; i++) {
+        m.removeWhere((key, value) => key == theResultTempList[i]);
+      }
+    }
+
+    int r = Random().nextInt((m.length));
+    if (distinct && theResultTempList.contains(m.keys.elementAt(r))) {
+      return await rangeProcessorInt();
+    } else {
+      theResultTempList.add(m.keys.elementAt(r));
+      theResult.add(m.values.elementAt(r).toString());
+    }
+    return await rangeProcessorInt();
+  }
+
   listProcessor() async {
     if (theResult.length == resultAmount) return;
 
@@ -158,11 +194,7 @@ class NumberProvider extends AbstractProvider {
       resultAmount = distinctListOfNumber.length;
       return;
     }
-
-    int time = (Random().nextInt(100) + 100).round();
-    duration += time;
-
-    await Future.delayed(Duration(milliseconds: time));
+    await delay();
 
     var m = Map.from(
         List.from(distinct ? distinctListOfNumber : listOfNumber).asMap());
@@ -174,8 +206,8 @@ class NumberProvider extends AbstractProvider {
     }
 
     int r = Random().nextInt((m.length));
-    print(
-        "$m length : ${m.length} random : $r nilai : ${m[r]} temp : $theResultTempList");
+    // print(
+    //     "$m length : ${m.length} random : $r nilai : ${m[r]} temp : $theResultTempList");
     if (distinct && theResultTempList.contains(m.keys.elementAt(r))) {
       return await listProcessor();
     } else {
@@ -183,5 +215,11 @@ class NumberProvider extends AbstractProvider {
       theResult.add(m.values.elementAt(r).toString());
     }
     return await listProcessor();
+  }
+
+  delay() async {
+    int time = (Random().nextInt(100) + 100).round();
+    duration += time;
+    await Future.delayed(Duration(milliseconds: time));
   }
 }
