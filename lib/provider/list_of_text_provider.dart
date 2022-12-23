@@ -4,7 +4,7 @@ import 'package:randomizer/provider/abstract_provider.dart';
 
 class ListOfTextProvider extends AbstractProvider {
   int resultAmount = 1;
-  int duration = 0;
+
   List<String> theResult = [];
   List<int> theResultTempList = [];
   List<String> listOfText = [];
@@ -63,12 +63,6 @@ class ListOfTextProvider extends AbstractProvider {
   get distinctListOfText => [
         ...{...listOfText}
       ];
-
-  delay() async {
-    int time = (Random().nextInt(100) + 100).round();
-    duration += time;
-    await Future.delayed(Duration(milliseconds: time));
-  }
 
   randomize() {
     randomizeList();

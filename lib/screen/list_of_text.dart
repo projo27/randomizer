@@ -53,7 +53,7 @@ class _ListOfTextScreenState extends State<ListOfTextScreen>
 
     return ScreenContainer(
       tag: '/list_of_text',
-      title: 'Random List Of Text',
+      title: 'List Of Text',
       appbarAction: [
         IconButton(
           padding: EdgeInsets.zero,
@@ -251,7 +251,7 @@ class _ListTextParamState extends State<_ListTextParam> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Input Text List"),
+                const Text("Input Text List"),
                 Text(
                   "*separate text with new line",
                   style: Theme.of(context).textTheme.caption,
@@ -272,7 +272,9 @@ class _ListTextParamState extends State<_ListTextParam> {
                 //     //ini regex untuk mendetek list of number /(^-?)(\d+((\.?\d*)?))/gm
                 //   )
                 // ],
+                textAlignVertical: TextAlignVertical.top,
                 maxLines: null,
+                expands: true,
                 keyboardType: TextInputType.multiline,
                 toolbarOptions:
                     const ToolbarOptions(copy: true, selectAll: true),
@@ -288,7 +290,8 @@ class _ListTextParamState extends State<_ListTextParam> {
                 ),
                 onChanged: (val) {
                   var l = (const LineSplitter().convert(val)
-                        ..removeWhere((element) => element.isEmpty))
+                        ..removeWhere((element) =>
+                            provider.isTrim && element.trim().isEmpty))
                       .toList();
                   context.read<ListOfTextProvider>().setListOfText(l);
                 },
@@ -301,7 +304,14 @@ class _ListTextParamState extends State<_ListTextParam> {
               children: [
                 Checkbox(
                   value: provider.isTrim,
-                  onChanged: (val) => provider.isTrim = val ?? false,
+                  onChanged: (val) {
+                    provider.isTrim = val ?? false;
+                    var l = (const LineSplitter().convert(_listCtrl.text)
+                          ..removeWhere((element) =>
+                              provider.isTrim && element.trim().isEmpty))
+                        .toList();
+                    context.read<ListOfTextProvider>().setListOfText(l);
+                  },
                 ),
                 const Text("Yes"),
               ],

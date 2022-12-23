@@ -15,6 +15,20 @@ ThemeData get themeData {
       bodyText1: GoogleFonts.plusJakartaSans(color: colorSheme.onSurface),
     ),
 
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.all<Color>(AppColor.green),
+        backgroundColor: MaterialStateProperty.all<Color>(AppColor.white),
+      ),
+    ),
+
+    timePickerTheme: TimePickerThemeData(
+      dialTextColor: AppColor.white,
+      entryModeIconColor: AppColor.white,
+      hourMinuteTextColor: AppColor.white,
+      helpTextStyle: base.textTheme.overline!.copyWith(color: AppColor.white),
+    ),
+
     /// Button
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

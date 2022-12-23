@@ -28,15 +28,19 @@ class _NumberScreenState extends State<NumberScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _tabController.addListener(() {
-        if (_tabController.indexIsChanging) {
-          context.read<NumberProvider>().option = _tabController.index == 0
-              ? NumberOption.range
-              : NumberOption.list;
-        }
-      });
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        _tabController.addListener(
+          () {
+            if (_tabController.indexIsChanging) {
+              context.read<NumberProvider>().option = _tabController.index == 0
+                  ? NumberOption.range
+                  : NumberOption.list;
+            }
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -327,6 +331,8 @@ class _ListNumberParamState extends State<_ListNumberParam> {
                     //ini regex untuk mendetek list of number /(^-?)(\d+((\.?\d*)?))/gm
                   )
                 ],
+                textAlignVertical: TextAlignVertical.top,
+                expands: true,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
                 toolbarOptions:

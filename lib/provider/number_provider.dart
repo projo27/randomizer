@@ -13,8 +13,6 @@ class NumberProvider extends AbstractProvider {
   bool _sort = true;
   bool _isAsc = true;
 
-  int duration = 0;
-
   num startRange = 0;
   num endRange = 100;
   List<num> listOfNumber = [];
@@ -215,11 +213,5 @@ class NumberProvider extends AbstractProvider {
       theResult.add(m.values.elementAt(r).toString());
     }
     return await listProcessor();
-  }
-
-  delay() async {
-    int time = (Random().nextInt(100) + 100).round();
-    duration += time;
-    await Future.delayed(Duration(milliseconds: time));
   }
 }

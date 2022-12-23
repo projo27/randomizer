@@ -43,12 +43,11 @@ List<MenuImage> randomMenuImages = [
         'Get random of Text from Lists Of Text, \nYou could choose Name over Group of People, \nor Just choose Random Food on the Menu Restaurant',
   ),
   MenuImage(
-    routeName: '/list_of_url',
-    imageAsset: 'assets/images/list_of_text.jpg',
-    // imageAsset: 'assets/images/list_of_url.jpg',
-    title: 'List Of URL',
+    routeName: '/date',
+    imageAsset: 'assets/images/date.jpg',
+    title: 'Date',
     description:
-        'Suck or too lazy for browsing something? \nDon\'t know again what do you want to access website? it will random the URL you own',
+        'Want to plan the task or event or journey? but cannot decide? use this date boxing',
   ),
   MenuImage(
     routeName: '/create_team',
@@ -58,11 +57,12 @@ List<MenuImage> randomMenuImages = [
         'Want to play and build a team from some of people? \nAnd you know level of every person? \nand want to balance every team?',
   ),
   MenuImage(
-    routeName: '/date',
-    imageAsset: 'assets/images/date.jpg',
-    title: 'Date',
+    routeName: '/list_of_url',
+    imageAsset: 'assets/images/list_of_text.jpg',
+    // imageAsset: 'assets/images/list_of_url.jpg',
+    title: 'List Of URL',
     description:
-        'Want to plan the task or event or journey? but cannot decide? use this date boxing',
+        'Suck or too lazy for browsing something? \nDon\'t know again what do you want to access website? it will random the URL you own',
   ),
   MenuImage(
     routeName: '/country',
