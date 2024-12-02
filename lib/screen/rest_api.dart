@@ -5,6 +5,6 @@ class RestAPIScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Country Screen");
+    return Text("Rest API Screen");
   }
 }

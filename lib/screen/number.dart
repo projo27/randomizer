@@ -198,12 +198,12 @@ class _NumberScreenState extends State<NumberScreen>
                             borderRadius: BorderRadius.circular(8),
                           ),
                           unselectedLabelColor: AppColor.black50,
-                          tabs: [
+                          tabs: const [
                             Tab(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Icon(Icons.numbers, size: 12),
                                   SizedBox(width: 4),
                                   Text('Range'),
@@ -214,7 +214,7 @@ class _NumberScreenState extends State<NumberScreen>
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Icon(Icons.format_list_numbered, size: 12),
                                   SizedBox(width: 4),
                                   Text('List'),

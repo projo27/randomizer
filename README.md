@@ -19,3 +19,10 @@ List of menu :
 - Random Password → acak kata-kata untuk menghasilkan password. Sama seperti fitur “suggest password” dari google
 - Random News → mendapatkan berita dari inputan url
 - Random dari data Rest API → misal REST api yang dipublish
+
+
+Pengembangan selanjutnya adalah seperti : 
+- scan / foto daftar menu makanan yang membuat bingung, klik randomize akan memilihkannya
+- scan / foto jawaban soal (ngitung kancing)
+- punya preferensi daftar makanan, tapi bingung mau makan apa hari ini, randomize akan mencoba memilihkannya (data disimpan jika user login / terdaftar)
+- 

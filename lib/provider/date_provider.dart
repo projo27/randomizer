@@ -1,9 +1,24 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:randomizer/provider/abstract_provider.dart';
 
 enum DateTimeOption { date, time }
+
+class DateFormatOption {
+  String format;
+  String example;
+  DateFormatOption(this.format, this.example);
+}
+
+List<DateFormatOption> dateFormatOptionList = [
+  DateFormatOption('dd/MM/yyyy', '31/08/2022'),
+  DateFormatOption('MM/dd/yyyy', '08/31/2022'),
+  DateFormatOption('dd.MM.yyyy', '31.08.2022'),
+  DateFormatOption('d MMM yyyy', '31 Aug 2022'),
+  DateFormatOption("EEE, MMM d, yyyy", 'Wed, Aug 31, 2022'),
+];
 
 class DateProvider extends AbstractProvider {
   DateTimeOption _option = DateTimeOption.date;
@@ -15,6 +30,14 @@ class DateProvider extends AbstractProvider {
   bool _distinct = false;
   bool _sort = true;
   bool _isAsc = true;
+  String _dateFormat = dateFormatOptionList[0].format;
+
+  String get dateTimeFormat => "$_dateFormat${_withTime ? ' HH:mm' : ''}";
+  set dateTimeFormat(String dateFormat) {
+    _dateFormat = dateFormat;
+    notifyListeners();
+  }
+
   // DateTime startDate = DateTime.now().subtract(const Duration(days: 365));
   DateTime startDate =
       DateUtils.dateOnly(DateTime.now().subtract(const Duration(days: 365)));
@@ -126,9 +149,50 @@ class DateProvider extends AbstractProvider {
 
   randomizeDate() async {
     setLoading();
+    theResult.clear();
+    duration = 0;
     try {
-      await delay();
-      theResult = ["Gundul", "Pacul"];
+      if (startDate.compareTo(endDate) > 0) {
+        var end = startDate;
+        startDate = endDate;
+        endDate = end;
+      }
+
+      if (_withTime) {
+        if (distinct) {
+          await dateTimeDistinctProcessor();
+        } else {
+          await dateTimeProcessor();
+        }
+      } else {
+        listOfDateTemp.clear();
+        theResultTempList.clear();
+
+        for (DateTime i = startDate;
+            i.compareTo(endDate) < 0;
+            i = i.add(const Duration(days: 1))) {
+          listOfDateTemp.add(i);
+        }
+
+        if (distinct) {
+          await dateDistinctProcessor();
+        } else {
+          await dateProcessor();
+        }
+      }
+
+      if (_sort) {
+        // DateFormat(dateTimeFormat).parseStrict();
+
+        theResult.sort((a, b) => isAsc
+            ? DateFormat(dateTimeFormat)
+                .parse(a)
+                .compareTo(DateFormat(dateTimeFormat).parse(b))
+            : DateFormat(dateTimeFormat)
+                .parse(b)
+                .compareTo(DateFormat(dateTimeFormat).parse(a)));
+        // l.sort((a, b) => isAsc ? a.compareTo(b) : b.compareTo(a));
+      }
       setSuccess();
     } catch (e) {
       setError();
@@ -186,16 +250,80 @@ class DateProvider extends AbstractProvider {
   }
 
   dateProcessor() async {
-    var diff = endDate.difference(startDate);
+    try {
+      if (duration > 10000) return;
+      if (listOfDateTemp.length < resultAmount) {
+        resultAmount = listOfDateTemp.length;
+      }
 
-    if (theResult.length == resultAmount) return;
-    if (distinct && theResult.length == diff.inDays + 1) {
-      resultAmount = theResult.length;
+      for (int i = 0; i < resultAmount; i++) {
+        await delay(resultAmount: resultAmount);
+
+        int r = Random().nextInt(listOfDateTemp.length);
+        theResult.add(DateFormat(dateTimeFormat).format(listOfDateTemp[r]!));
+      }
+    } catch (e) {
+      print(e);
+    } finally {
       return;
     }
-
-    if (distinct) {}
   }
 
-  dateTimeProcessor() async {}
+  dateDistinctProcessor() async {
+    if (listOfDateTemp.length < resultAmount) {
+      resultAmount = listOfDateTemp.length;
+    }
+
+    listOfDateTemp.shuffle();
+
+    for (int i = 0; i < resultAmount; i++) {
+      await delay(resultAmount: resultAmount);
+      theResult.add(DateFormat(dateTimeFormat).format(listOfDateTemp[i]!));
+    }
+    return;
+  }
+
+  dateTimeProcessor() async {
+    listOfDateTemp.clear();
+    int start = startDate.millisecondsSinceEpoch;
+    int end = endDate.millisecondsSinceEpoch;
+
+    //print("$start $end");
+
+    // 60000 = 60 second * 1000 milisecond
+    for (int i = start; i <= end; i += 60000) {
+      listOfDateTemp.add(DateTime.fromMillisecondsSinceEpoch(i));
+    }
+
+    if (listOfDateTemp.length < resultAmount) {
+      resultAmount = listOfDateTemp.length;
+    }
+
+    for (int l = 0; l < resultAmount; l++) {
+      await delay(resultAmount: resultAmount);
+      int r = Random().nextInt(listOfDateTemp.length);
+      theResult.add(DateFormat(dateTimeFormat).format(listOfDateTemp[r]!));
+    }
+  }
+
+  dateTimeDistinctProcessor() async {
+    listOfDateTemp.clear();
+    int start = startDate.millisecondsSinceEpoch;
+    int end = endDate.millisecondsSinceEpoch;
+    // 60000 = 60 second * 1000 milisecond
+    for (int i = start; i <= end; i += 60000) {
+      listOfDateTemp.add(DateTime.fromMillisecondsSinceEpoch(i));
+    }
+
+    if (listOfDateTemp.length < resultAmount) {
+      resultAmount = listOfDateTemp.length;
+    }
+
+    listOfDateTemp.shuffle();
+
+    for (int l = 0; l < resultAmount; l++) {
+      await delay(resultAmount: resultAmount);
+      theResult.add(DateFormat(dateTimeFormat).format(listOfDateTemp[l]!));
+    }
+  }
 }

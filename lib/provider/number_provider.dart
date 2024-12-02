@@ -66,64 +66,10 @@ class NumberProvider extends AbstractProvider {
     notifyListeners();
   }
 
-  get listOfNumberText => listOfNumber.join("\n");
-  get distinctListOfNumber => [
+  String get listOfNumberText => listOfNumber.join("\n");
+  List<num> get distinctListOfNumber => [
         ...{...listOfNumber}
       ];
-
-  randomizeRange() async {
-    setLoading();
-    theResult.clear();
-    duration = 0;
-    try {
-      if (int.tryParse(startRange.toString()) != null ||
-          int.tryParse(endRange.toString()) != null) {
-        listOfNumberTemp.clear();
-        theResultTempList.clear();
-
-        for (num i = startRange; i <= endRange; i++) {
-          listOfNumberTemp.add(i);
-        }
-        await rangeProcessorInt();
-      } else {
-        await rangeProcessor();
-      }
-      if (_sort) {
-        theResult.sort((a, b) => isAsc
-            ? double.parse(a).compareTo(double.parse(b))
-            : double.parse(b).compareTo(double.parse(a)));
-      }
-      setSuccess();
-    } catch (e) {
-      setError();
-    }
-  }
-
-  randomizeList() async {
-    setLoading();
-    theResult.clear();
-    theResultTempList.clear();
-    duration = 0;
-    try {
-      await listProcessor();
-      if (_sort) {
-        theResult.sort((a, b) => isAsc
-            ? num.parse(a).compareTo(num.parse(b))
-            : num.parse(b).compareTo(num.parse(a)));
-      }
-      setSuccess();
-    } catch (e) {
-      setError();
-    }
-  }
-
-  randomize() {
-    if (_option == NumberOption.range) {
-      randomizeRange();
-      return;
-    }
-    randomizeList();
-  }
 
   int getNumberOfDecimals(String number) {
     if (number.contains('.')) {
@@ -140,7 +86,75 @@ class NumberProvider extends AbstractProvider {
         : getNumberOfDecimals(startRange.toString());
   }
 
-  rangeProcessor() async {
+  randomize() {
+    if (_option == NumberOption.range) {
+      randomizeRange();
+      return;
+    }
+    randomizeList();
+  }
+
+  randomizeRange() async {
+    setLoading();
+    theResult.clear();
+    duration = 0;
+    try {
+      if (int.tryParse(startRange.toString()) != null &&
+          int.tryParse(endRange.toString()) != null) {
+        await rangeProcessorInt();
+      } else {
+        await rangeDoubleProcessor();
+      }
+      if (_sort) {
+        theResult.sort((a, b) => isAsc
+            ? double.parse(a).compareTo(double.parse(b))
+            : double.parse(b).compareTo(double.parse(a)));
+      }
+      setSuccess();
+    } catch (e) {
+      setError();
+    }
+  }
+
+  rangeIntProcessor() async {
+    listOfNumberTemp.clear();
+
+    for (int i = startRange.round(); i < endRange.round() + 1; i++) {
+      listOfNumberTemp.add(i);
+    }
+
+    if (listOfNumberTemp.length < resultAmount) {
+      resultAmount = listOfNumberTemp.length;
+    }
+
+    listOfNumberTemp.shuffle();
+
+    for (int i = 0; i < resultAmount; i++) {
+      int r = Random().nextInt(listOfNumberTemp.length);
+      await delay(resultAmount: resultAmount);
+      theResult.add(listOfNumberTemp[r].toString());
+    }
+  }
+
+  rangeIntDistinctProcessor() async {
+    listOfNumberTemp.clear();
+
+    for (int i = startRange.round(); i < endRange.round() + 1; i++) {
+      listOfNumberTemp.add(i);
+    }
+
+    if (listOfNumberTemp.length < resultAmount) {
+      resultAmount = listOfNumberTemp.length;
+    }
+
+    listOfNumberTemp.shuffle();
+    for (int i = 0; i < resultAmount; i++) {
+      await delay(resultAmount: resultAmount);
+      theResult.add(listOfNumberTemp[i].toString());
+    }
+  }
+
+  rangeDoubleProcessor() async {
     if (theResult.length == resultAmount) return;
     if (distinct && theResult.length == (endRange - startRange + 1)) {
       resultAmount = ((endRange - startRange + 1).round());
@@ -151,67 +165,64 @@ class NumberProvider extends AbstractProvider {
 
     double r = (Random().nextDouble() * (startRange + endRange)) + startRange;
     if (distinct && theResult.contains(r.toStringAsFixed(numberOfDecimal))) {
-      return await rangeProcessor();
+      return await rangeDoubleProcessor();
     } else {
       theResult.add(r.toStringAsFixed(numberOfDecimal));
     }
-    return await rangeProcessor();
+    return await rangeDoubleProcessor();
   }
 
   rangeProcessorInt() async {
-    if (theResult.length == resultAmount) return;
-    if (distinct && theResult.length == listOfNumberTemp.length) {
-      resultAmount = listOfNumberTemp.length;
-      return;
-    }
-
-    await delay();
-
-    var m = Map.from(List.from(listOfNumberTemp).asMap());
-
     if (distinct) {
-      for (int i = 0; i < theResultTempList.length; i++) {
-        m.removeWhere((key, value) => key == theResultTempList[i]);
-      }
-    }
-
-    int r = Random().nextInt((m.length));
-    if (distinct && theResultTempList.contains(m.keys.elementAt(r))) {
-      return await rangeProcessorInt();
+      await rangeIntDistinctProcessor();
     } else {
-      theResultTempList.add(m.keys.elementAt(r));
-      theResult.add(m.values.elementAt(r).toString());
+      await rangeIntProcessor();
     }
-    return await rangeProcessorInt();
+  }
+
+  randomizeList() async {
+    setLoading();
+    theResult.clear();
+    theResultTempList.clear();
+    duration = 0;
+    try {
+      if (distinct) {
+        await distinctListProcessor();
+      } else {
+        await listProcessor();
+      }
+      if (_sort) {
+        theResult.sort((a, b) => isAsc
+            ? num.parse(a).compareTo(num.parse(b))
+            : num.parse(b).compareTo(num.parse(a)));
+      }
+      setSuccess();
+    } catch (e) {
+      setError();
+    }
   }
 
   listProcessor() async {
-    if (theResult.length == resultAmount) return;
+    if (listOfNumber.length < resultAmount) {
+      resultAmount = listOfNumber.length;
+    }
 
-    if (distinct && theResult.length == distinctListOfNumber.length) {
+    listOfNumber.shuffle();
+    for (int i = 0; i < resultAmount; i++) {
+      await delay(resultAmount: resultAmount);
+      theResult.add(listOfNumber[i].toString());
+    }
+  }
+
+  distinctListProcessor() async {
+    if (distinctListOfNumber.length < resultAmount) {
       resultAmount = distinctListOfNumber.length;
-      return;
-    }
-    await delay();
-
-    var m = Map.from(
-        List.from(distinct ? distinctListOfNumber : listOfNumber).asMap());
-
-    if (distinct) {
-      for (int i = 0; i < theResultTempList.length; i++) {
-        m.removeWhere((key, value) => key == theResultTempList[i]);
-      }
     }
 
-    int r = Random().nextInt((m.length));
-    // print(
-    //     "$m length : ${m.length} random : $r nilai : ${m[r]} temp : $theResultTempList");
-    if (distinct && theResultTempList.contains(m.keys.elementAt(r))) {
-      return await listProcessor();
-    } else {
-      theResultTempList.add(m.keys.elementAt(r));
-      theResult.add(m.values.elementAt(r).toString());
+    distinctListOfNumber.shuffle();
+    for (int i = 0; i < resultAmount; i++) {
+      await delay(resultAmount: resultAmount);
+      theResult.add(distinctListOfNumber[i].toString());
     }
-    return await listProcessor();
   }
 }

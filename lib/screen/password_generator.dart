@@ -5,6 +5,6 @@ class PasswordGeneratorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Country Screen");
+    return Text("Password Generator Screen");
   }
 }

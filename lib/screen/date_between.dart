@@ -203,7 +203,7 @@ class _DateBetweenScreenState extends State<DateBetweenScreen>
                                 children: const [
                                   Icon(Icons.date_range, size: 12),
                                   SizedBox(width: 4),
-                                  Text('Date'),
+                                  Text('DATE'),
                                 ],
                               ),
                             ),
@@ -214,7 +214,7 @@ class _DateBetweenScreenState extends State<DateBetweenScreen>
                                 children: const [
                                   Icon(Icons.timer_sharp, size: 12),
                                   SizedBox(width: 4),
-                                  Text('Time'),
+                                  Text('TIME'),
                                 ],
                               ),
                             ),
@@ -453,6 +453,7 @@ class __DateParamState extends State<_DateParam> {
   final TextEditingController resultAmountCtrl = TextEditingController();
   final TextEditingController startDateCtrl = TextEditingController();
   final TextEditingController endDateCtrl = TextEditingController();
+  final TextEditingController dateTimeFormatCtrl = TextEditingController();
 
   _showTimePicker(BuildContext context, {bool isStartTime = true}) async {
     var initialTime = isStartTime
@@ -546,11 +547,12 @@ class __DateParamState extends State<_DateParam> {
   @override
   Widget build(BuildContext context) {
     var provider = context.watch<DateProvider>();
-    var dateFormat =
-        provider.withTime ? DateFormat.yMd().add_Hm() : DateFormat.yMd();
+    var dateFormat = DateFormat(provider.dateTimeFormat);
+    // provider.withTime ? DateFormat.yMd().add_Hm() : DateFormat.yMd();
     resultAmountCtrl.text = provider.resultAmount.toString();
     startDateCtrl.text = dateFormat.format(provider.startDate);
     endDateCtrl.text = dateFormat.format(provider.endDate);
+    dateTimeFormatCtrl.text = provider.dateTimeFormat;
 
     return Container(
       height: double.infinity,
@@ -600,6 +602,63 @@ class __DateParamState extends State<_DateParam> {
               onTap: () {
                 _showDatePicker(context,
                     isStartDate: false, withTime: provider.withTime);
+              },
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(12, 0, 12, 0),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColor.green, width: 2),
+                ),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text("Date ${provider.withTime ? 'Time' : ''} Format :"),
+            TextFormField(
+              controller: dateTimeFormatCtrl,
+              readOnly: true,
+              onTap: () {
+                showDialog<String>(
+                  context: context,
+                  builder: (context) {
+                    return SimpleDialog(
+                      title: Text(
+                        "Select Date Format",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          height: 300,
+                          width: 300,
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            itemCount: dateFormatOptionList.length,
+                            separatorBuilder: (context, idx) {
+                              return const Divider();
+                            },
+                            itemBuilder: (context, idx) {
+                              return ListTile(
+                                dense: true,
+                                focusColor: AppColor.milk,
+                                hoverColor: AppColor.milk,
+                                title: Text(dateFormatOptionList[idx].format),
+                                trailing: Text(
+                                  dateFormatOptionList[idx].example,
+                                  style: Theme.of(context).textTheme.caption,
+                                ),
+                                onTap: () {
+                                  context.read<DateProvider>().dateTimeFormat =
+                                      dateFormatOptionList[idx].format;
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                );
               },
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.fromLTRB(12, 0, 12, 0),

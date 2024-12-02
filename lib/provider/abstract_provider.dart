@@ -33,8 +33,8 @@ class AbstractProvider extends ChangeNotifier {
     return executionState == ExecutionState.loading;
   }
 
-  delay() async {
-    int time = (Random().nextInt(100) + 100).round();
+  delay({int resultAmount = 100}) async {
+    int time = (Random().nextInt((10000 / resultAmount).round())).round();
     duration += time;
     await Future.delayed(Duration(milliseconds: time));
   }

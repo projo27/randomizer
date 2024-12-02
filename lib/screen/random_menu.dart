@@ -52,7 +52,18 @@ class _MenuItemState extends State<MenuItem> {
         children: [
           InkWell(
             onTap: () {
-              Navigator.of(context).pushNamed(widget.menuImage.routeName);
+              if (widget.menuImage.onDevelop) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    backgroundColor: AppColor.black50,
+                    content: Text(
+                        "We're still developing on this menu, Wait for It 👌..."),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              } else {
+                Navigator.of(context).pushNamed(widget.menuImage.routeName);
+              }
             },
             child: SizedBox(
               width: double.infinity,
@@ -73,7 +84,8 @@ class _MenuItemState extends State<MenuItem> {
                     Visibility(
                       visible: widget.menuImage.proOnly,
                       child: const Tooltip(
-                        message: "For Pro Only, (Everybody need Money :D)",
+                        message:
+                            "For Pro Only, (Everybody need Money 😁, Me too)",
                         child: Icon(
                           Icons.verified_user,
                           size: 16,
